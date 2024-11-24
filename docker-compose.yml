@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  grpc-server:
+    build:
+      context: ./server  # Path to the server's Dockerfile
+    container_name: server-container
+    ports:
+      - "50051:50051"  # Maps host port 50051 to container port 50051
+    networks:
+      - grpc-network
+
+  grpc-client:
+    build:
+      context: ./client  # Path to the client's Dockerfile
+    container_name: client-container
+    depends_on:
+      - grpc-server
+    networks:
+      - grpc-network
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"  # Maps the host machine IP for client
+
+networks:
+  grpc-network:
